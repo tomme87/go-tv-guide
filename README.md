@@ -1,5 +1,7 @@
 # go-tv-guide
 
+[![Build Status](https://travis-ci.com/tomme87/go-tv-guide.svg?branch=master)](https://travis-ci.com/tomme87/go-tv-guide)
+
 **WIP** - Supposed to be an API for a TV Guide in Go and a frontend created in Angular 6.
 
 In progress:
