@@ -1,11 +1,10 @@
 package xmltv
 
 import (
-	"testing"
-	"os"
-	"encoding/xml"
-	"golang.org/x/net/html/charset"
 	"encoding/json"
+	"fmt"
+	"os"
+	"testing"
 )
 
 func TestUnmarshalXML(t *testing.T) {
@@ -16,19 +15,17 @@ func TestUnmarshalXML(t *testing.T) {
 
 	var tv Tv
 
-	decoder := xml.NewDecoder(f)
-	decoder.CharsetReader = charset.NewReaderLabel
-	err = decoder.Decode(&tv)
+	err = tv.LoadXML(f)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	//spew.Dump(tv)
 
-	_, err = json.Marshal(&tv)
+	j, err := json.Marshal(&tv)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	//fmt.Println(string(j))
+	fmt.Println(string(j))
 }

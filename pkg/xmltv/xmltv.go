@@ -1,8 +1,10 @@
 package xmltv
 
 import (
-	"time"
 	"encoding/xml"
+	"golang.org/x/net/html/charset"
+	"os"
+	"time"
 )
 
 // Time that holds the time which is parsed from XML
@@ -33,12 +35,25 @@ type Tv struct {
 	GeneratorInfoURL  string      `xml:"generator-info-url,attr,omitempty"  json:"generator_info_url,omitempty"`
 }
 
+// LoadXML loads the xmltv XML from file.
+func (t *Tv) LoadXML(f *os.File) error {
+	decoder := xml.NewDecoder(f)
+	decoder.CharsetReader = charset.NewReaderLabel
+
+	err := decoder.Decode(&t)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Channel details of a channel
 type Channel struct {
-	DisplayNames []CommonElement `xml:"display-name"   json:"display_names"`
-	Icons        []Icon          `xml:"icon,omitempty" json:"icons,omitempty"`
-	URLs         []string        `xml:"url,omitempty"  json:"urls,omitempty"`
-	ID           string          `xml:"id,attr"        json:"id,omitempty"`
+	DisplayNames []CommonElement `xml:"display-name"   json:"display_names"   bson:"display_names"`
+	Icons        []Icon          `xml:"icon,omitempty" json:"icons,omitempty" bson:"icons,omitempty"`
+	URLs         []string        `xml:"url,omitempty"  json:"urls,omitempty"  bson:"urls,omitempty"`
+	ID           string          `xml:"id,attr"        json:"id,omitempty"    bson:"id,omitempty"`
 }
 
 // Programme details of a single programme transmission
@@ -79,8 +94,8 @@ type Programme struct {
 
 // CommonElement element structure that is common, i.e. <country lang="en">Italy</country>
 type CommonElement struct {
-	Lang  string `xml:"lang,attr,omitempty" json:"lang,omitempty"`
-	Value string `xml:",chardata"           json:"value,omitempty"`
+	Lang  string `xml:"lang,attr,omitempty" json:"lang,omitempty"  bson:"lang,omitempty"`
+	Value string `xml:",chardata"           json:"value,omitempty" bson:"value,omitempty"`
 }
 
 // ElementPresent used to determine if element is present or not
@@ -96,9 +111,9 @@ func (c *ElementPresent) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 
 // Icon associated with the element that contains it
 type Icon struct {
-	Source string `xml:"src,attr"         json:"source"`
-	Width  int    `xml:"width,omitempty"  json:"width,omitempty"`
-	Height int    `xml:"height,omitempty" json:"height,omitempty"`
+	Source string `xml:"src,attr"         json:"source"           bson:"source"`
+	Width  int    `xml:"width,omitempty"  json:"width,omitempty"  bson:"width,omitempty"`
+	Height int    `xml:"height,omitempty" json:"height,omitempty" bson:"height,omitempty"`
 }
 
 // Credits for the programme
